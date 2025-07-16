@@ -1,0 +1,172 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Privacy Policy for Alex Kirimi's Blog, outlining data collection, usage, and protection practices.">
+  <meta name="keywords" content="privacy policy, Alex Kirimi, economics blog, data protection">
+  <meta name="author" content="Alex Kirimi">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="Privacy Policy - Alex Kirimi's Blog">
+  <meta property="og:description" content="Read the Privacy Policy for Alex Kirimi's Blog to understand how your data is handled.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://alexkirimi.blogspot.com/privacy.html">
+  <meta name="twitter:card" content="summary_large_image">
+  <title>Privacy Policy - Alex Kirimi's Blog</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .prose h2 {
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+    }
+    .back-to-top {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #1d4ed8;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 50%;
+      text-decoration: none;
+      display: none;
+    }
+    .back-to-top.show {
+      display: block;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+  <!-- Header -->
+  <header class="bg-blue-700 text-white sticky top-0 z-10 shadow">
+    <nav class="container mx-auto p-4 flex justify-between items-center">
+      <h1 class="text-2xl font-bold">Alex Kirimi's Blog</h1>
+      <ul class="flex space-x-6">
+        <li><a href="index.html" class="hover:underline">Home</a></li>
+        <li><a href="about.html" class="hover:underline">About</a></li>
+        <li><a href="contact.html" class="hover:underline">Contact</a></li>
+        <li><a href="privacy.html" class="hover:underline">Privacy Policy</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container mx-auto p-6 prose max-w-4xl bg-white shadow-md rounded-lg mt-6">
+    <h1 class="text-4xl font-bold text-center mb-6">Privacy Policy</h1>
+    <section>
+      <p>Last Updated: July 16, 2025</p>
+      <p>Welcome to Alex Kirimi's Blog. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website. Please read this policy carefully. If you do not agree with the terms, please do not access the site.</p>
+    </section>
+    <section>
+      <h2>1. Information We Collect</h2>
+      <p>We may collect information about you in the following ways:</p>
+      <ul class="list-disc pl-6">
+        <li><strong>Personal Data</strong>: We do not collect personally identifiable information unless you voluntarily provide it (e.g., via email contact).</li>
+        <li><strong>Usage Data</strong>: We collect anonymized data about your interactions with the site, such as pages visited, time spent, and referring URLs, through tools like Google Analytics.</li>
+        <li><strong>Cookies</strong>: We use cookies to enhance your experience, analyze site performance, and serve relevant ads. You can manage cookie preferences via your browser settings.</li>
+      </ul>
+    </section>
+    <section>
+      <h2>2. Use of Your Information</h2>
+      <p>We use collected information to:</p>
+      <ul class="list-disc pl-6">
+        <li>Improve and personalize your experience on the blog.</li>
+        <li>Analyze site usage to optimize content and performance.</li>
+        <li>Display advertisements through third-party services like Google AdSense.</li>
+        <li>Respond to your inquiries or feedback.</li>
+      </ul>
+    </section>
+    <section>
+      <h2>3. Third-Party Services</h2>
+      <p>We may use third-party services (e.g., Google Analytics, Google AdSense) that collect and process data. These services have their own privacy policies:</p>
+      <ul class="list-disc pl-6">
+        <li><a href="https://policies.google.com/privacy" class="text-blue-600 hover:underline">Google Privacy Policy</a></li>
+      </ul>
+    </section>
+    <section>
+      <h2>4. Cookies and Tracking</h2>
+      <p>Our site uses cookies to enhance user experience and deliver targeted ads. You can disable cookies in your browser, but this may affect site functionality.</p>
+    </section>
+    <section>
+      <h2>5. Data Security</h2>
+      <p>We take reasonable measures to protect your information, but no method of transmission over the internet is 100% secure. We strive to use commercially acceptable means to safeguard data.</p>
+    </section>
+    <section>
+      <h2>6. Your Choices</h2>
+      <p>You may opt out of cookies via browser settings or opt-out tools provided by third-party services like Google Analytics.</p>
+    </section>
+    <section>
+      <h2>7. Changes to This Privacy Policy</h2>
+      <p>We may update this policy periodically. Changes will be posted on this page with an updated "Last Updated" date.</p>
+    </section>
+    <section>
+      <h2>8. Contact Us</h2>
+      <p>For questions about this Privacy Policy, contact us at <a href="mailto:alexkirimi@example.com" class="text-blue-600 hover:underline">alexkirimi@example.com</a>.</p>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white p-6 mt-6">
+    <div class="container mx-auto text-center">
+      <p>© 2025 Alex Kirimi's Blog. All rights reserved.</p>
+      <p><a href="privacy.html" class="text-blue-300 hover:underline">Privacy Policy</a> | <a href="contact.html" class="text-blue-300 hover:underline">Contact</a></p>
+    </div>
+  </footer>
+
+  <!-- Back to Top Button -->
+  <a href="#top" class="back-to-top">↑</a>
+
+  <script>
+    // Show/hide back-to-top button
+    window.addEventListener('scroll', () => {
+      const backToTop = document.querySelector('.back-to-top');
+      if (window.scrollY > 300) {
+        backToTop.classList.add('show');
+      } else {
+        backToTop.classList.remove('show');
+      }
+    });
+  </script>
+</body>
+</html>

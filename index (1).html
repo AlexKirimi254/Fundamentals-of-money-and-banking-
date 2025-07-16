@@ -1,0 +1,236 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Learn about money and banking, including the meaning of money, barter system, evolution of money, characteristics, and functions.">
+  <meta name="keywords" content="money, banking, barter system, evolution of money, functions of money, economics">
+  <meta name="author" content="Alex Kirimi">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="Money and Banking - Alex Kirimi's Blog">
+  <meta property="og:description" content="Explore the concepts of money and banking, from barter systems to modern financial systems.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://alexkirimi.blogspot.com">
+  <meta name="twitter:card" content="summary_large_image">
+  <title>Money and Banking - Alex Kirimi's Blog</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .prose h2 {
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+    }
+    .prose h3 {
+      margin-top: 1.5rem;
+      margin-bottom: 0.75rem;
+    }
+    .back-to-top {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #1d4ed8;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 50%;
+      text-decoration: none;
+      display: none;
+    }
+    .back-to-top.show {
+      display: block;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+  <!-- Header -->
+  <header class="bg-blue-700 text-white sticky top-0 z-10 shadow">
+    <nav class="container mx-auto p-4 flex justify-between items-center">
+      <h1 class="text-2xl font-bold">Alex Kirimi's Blog</h1>
+      <ul class="flex space-x-6">
+        <li><a href="index.html" class="hover:underline">Home</a></li>
+        <li><a href="about.html" class="hover:underline">About</a></li>
+        <li><a href="contact.html" class="hover:underline">Contact</a></li>
+        <li><a href="privacy.html" class="hover:underline">Privacy Policy</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container mx-auto p-6 prose max-w-4xl bg-white shadow-md rounded-lg mt-6">
+    <h1 class="text-4xl font-bold text-center mb-6">Money and Banking</h1>
+
+    <nav class="mb-8">
+      <h2 class="text-2xl font-semibold">Table of Contents</h2>
+      <ul class="list-disc pl-6">
+        <li><a href="#meaning" class="text-blue-600 hover:underline">The Meaning of Money</a></li>
+        <li><a href="#barter" class="text-blue-600 hover:underline">The Barter System of Exchange</a></li>
+        <li><a href="#evolution" class="text-blue-600 hover:underline">Evolution of Money</a></li>
+        <li><a href="#nature" class="text-blue-600 hover:underline">Nature and Characteristics of Money</a></li>
+        <li><a href="#functions" class="text-blue-600 hover:underline">Functions of Money</a></li>
+        <li><a href="#conclusion" class="text-blue-600 hover:underline">Conclusion</a></li>
+        <li><a href="#assignment" class="text-blue-600 hover:underline">Assignment</a></li>
+      </ul>
+    </nav>
+
+    <section id="meaning">
+      <h2>The Meaning of Money</h2>
+      <p>There is no single, universally accepted definition of money due to its multifaceted functions. Economists have proposed various approaches, including the Conventional, Chicago, Gurley and Shaw, and Central Bank approaches.</p>
+      <p>The <strong>Conventional approach</strong>, the oldest, defines money by its primary function as a medium of exchange. Crowther (1958) describes money as "anything that is generally acceptable as a medium of exchange or to settle debts." Keynes (1930) states it as "that by delivery of which debts and price contracts can be discharged." Dennis Robertson defines it as "anything widely acceptable in payment for goods or in discharge of business obligations." Kant RP views money as "anything commonly used and generally acceptable as a medium of exchange or a standard measure of value."</p>
+      <p>Money stock typically includes currency in circulation (C) and total demand deposits held by commercial banks, excluding time deposits and other short-term securities. Paul Samuelson defines money as "the modern medium of exchange and the standard unit in which prices and debts are expressed." Lewis E. Davids, in his <em>Dictionary of Banking and Finance</em>, defines it as "any form of coin or paper currency of legal tender which passes freely as a medium of exchange."</p>
+    </section>
+
+    <section id="barter">
+      <h2>The Barter System of Exchange</h2>
+      <p>Before money, trade relied on the barter system, where goods and services were exchanged directly without a medium of exchange. This required a double coincidence of wants, meaning both parties needed to desire what the other offered in the desired quantity. For example, trading a bag of maize required finding someone who wanted maize and had something desirable to offer in return.</p>
+      <h3>Difficulties of the Barter System</h3>
+      <ul class="list-disc pl-6">
+        <li><strong>Double Coincidence of Wants</strong>: Traders needed to find someone who wanted their goods and offered desired goods in return.</li>
+        <li><strong>Lack of Standard Measure of Value</strong>: No common measure existed, leading to arbitrary exchange rates based on demand intensity.</li>
+        <li><strong>Indivisibility</strong>: Dividing goods (e.g., a cow for a goat) was problematic, complicating fair trades.</li>
+        <li><strong>Store of Value</strong>: Perishable goods were difficult and costly to store, and services were perishable.</li>
+        <li><strong>Lack of Standard for Deferred Payments</strong>: Perishable goods made future payments unreliable due to value changes.</li>
+        <li><strong>Lack of Specialization</strong>: Individuals produced multiple goods to ensure trade capability, hindering specialization.</li>
+      </ul>
+      <p><strong>Self-Evaluation Exercise</strong>: Discuss the barter system and its peculiar difficulties.</p>
+    </section>
+
+    <section id="evolution">
+      <h2>Evolution of Money</h2>
+      <p>Money evolved to address the barter system's inefficiencies. Its development progressed through five stages, influenced by human civilization's advancements.</p>
+      <h3>Commodity Money</h3>
+      <p>Valuable, scarce commodities like spears, precious stones, hides, cowry shells, and cattle were used as money. These lacked uniformity, were difficult to store, and were not easily divisible or portable.</p>
+      <h3>Metallic Money</h3>
+      <p>Precious metals (gold, silver, copper) replaced commodities due to their stable value, divisibility, and recognizability. However, they were bulky, prone to debasement, and expensive to mint.</p>
+      <h3>Paper Money</h3>
+      <p>Originating from goldsmiths' receipts, paper money evolved as promissory notes backed by precious metals, leading to modern banknotes.</p>
+      <h3>Credit Money</h3>
+      <p>Cheques and demand deposits became means of transferring money, used primarily for large transactions.</p>
+      <h3>Near Money or Quasi Assets</h3>
+      <p>Assets like treasury bills, bonds, and savings certificates, easily convertible to cash, serve as a store of value and are negotiable.</p>
+      <p><strong>Self-Evaluation Exercise</strong>: Enumerate and discuss the various stages of money's evolution.</p>
+    </section>
+
+    <section id="nature">
+      <h2>Nature and Characteristics of Money</h2>
+      <p>Money is defined by its functions: medium of exchange, unit of account, and store of value. It can be defined functionally (what it does) or legally (state-declared money).</p>
+      <h3>Characteristics of Money</h3>
+      <ul class="list-disc pl-6">
+        <li><strong>General Acceptability</strong>: Money must be widely accepted for transactions.</li>
+        <li><strong>Durability</strong>: It should retain value and quality over time, often backed by legal tender status.</li>
+        <li><strong>Portability</strong>: Money should be easy to carry and high in value relative to size.</li>
+        <li><strong>Recognizability</strong>: It should be easily identifiable by sight or touch.</li>
+        <li><strong>Homogeneity</strong>: Units of the same denomination should be identical.</li>
+        <li><strong>Divisibility</strong>: Money should be divisible into smaller units.</li>
+        <li><strong>Stability</strong>: Its value should remain stable over time.</li>
+        <li><strong>Relative Scarcity</strong>: Money should be scarce but not overly so to maintain value.</li>
+        <li><strong>Transferability</strong>: It should be easily transferable without restrictions.</li>
+        <li><strong>Not Easily Counterfeited</strong>: Money should be difficult to replicate to protect its value.</li>
+      </ul>
+      <p><strong>Self-Evaluation Exercise</strong>: Discuss the characteristics of money.</p>
+    </section>
+
+    <section id="functions">
+      <h2>Functions of Money</h2>
+      <p>Money's importance lies in its functions, which eliminate barter system difficulties and facilitate trade.</p>
+      <h3>Primary Functions</h3>
+      <ul class="list-disc pl-6">
+        <li><strong>Medium of Exchange</strong>: Money facilitates trade by eliminating the need for double coincidence of wants.</li>
+        <li><strong>Unit of Value</strong>: It serves as a standard for measuring value and facilitates accounting.</li>
+      </ul>
+      <h3>Secondary Functions</h3>
+      <ul class="list-disc pl-6">
+        <li><strong>Standard of Deferred Payments</strong>: Money simplifies credit transactions and loan repayments.</li>
+        <li><strong>Store of Value</strong>: Its durability allows saving for future spending, though inflation can weaken this function.</li>
+        <li><strong>Transfer of Value</strong>: Money enables value transfer across people and locations.</li>
+      </ul>
+      <h3>Contingent Functions</h3>
+      <ul class="list-disc pl-6">
+        <li><strong>Most Liquid Asset</strong>: Money is the most liquid form of wealth.</li>
+        <li><strong>Basis of Credit System</strong>: It underpins credit creation by banks.</li>
+        <li><strong>Bargaining Power</strong>: Money determines purchasing power in negotiations.</li>
+        <li><strong>Measurement and Distribution of National Income</strong>: It quantifies economic output and factor rewards.</li>
+      </ul>
+      <p><strong>Self-Evaluation Exercise</strong>: Identify and discuss the distinct functions of money.</p>
+    </section>
+
+    <section id="conclusion">
+      <h2>Conclusion</h2>
+      <p>Money is essential for any economy to thrive, enabling seamless transactions within and across borders. Defined as a generally accepted medium of exchange, money has evolved from barter to a sophisticated system with specific characteristics that address barter's inefficiencies. Its functions—medium of exchange, unit of value, store of value, and more—facilitate trade, credit, and economic growth.</p>
+    </section>
+
+    <section id="assignment">
+      <h2>Assignment</h2>
+      <ol class="list-decimal pl-6">
+        <li>What problems/difficulties led to the evolution and emergence of money?</li>
+        <li>Discuss the distinguishing features between money and near money.</li>
+        <li>"Money is what money does." Explain this statement with the definition of money.</li>
+        <li>Discuss the major functions of money in an economy.</li>
+        <li>What qualities must a commodity possess to serve as money effectively?</li>
+      </ol>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white p-6 mt-6">
+    <div class="container mx-auto text-center">
+      <p>© 2025 Alex Kirimi's Blog. All rights reserved.</p>
+      <p><a href="privacy.html" class="text-blue-300 hover:underline">Privacy Policy</a> | <a href="contact.html" class="text-blue-300 hover:underline">Contact</a></p>
+    </div>
+  </footer>
+
+  <!-- Back to Top Button -->
+  <a href="#top" class="back-to-top">↑</a>
+
+  <script>
+    // Show/hide back-to-top button
+    window.addEventListener('scroll', () => {
+      const backToTop = document.querySelector('.back-to-top');
+      if (window.scrollY > 300) {
+        backToTop.classList.add('show');
+      } else {
+        backToTop.classList.remove('show');
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Learn about Alex Kirimi and the purpose of this economics-focused blog.">
+  <meta name="keywords" content="Alex Kirimi, economics blog, money and banking, financial education">
+  <meta name="author" content="Alex Kirimi">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="About - Alex Kirimi's Blog">
+  <meta property="og:description" content="Discover more about Alex Kirimi and his mission to educate on economics and finance.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://alexkirimi.blogspot.com/about.html">
+  <meta name="twitter:card" content="summary_large_image">
+  <title>About - Alex Kirimi's Blog</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .prose h2 {
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+    }
+    .back-to-top {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #1d4ed8;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 50%;
+      text-decoration: none;
+      display: none;
+    }
+    .back-to-top.show {
+      display: block;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+  <!-- Header -->
+  <header class="bg-blue-700 text-white sticky top-0 z-10 shadow">
+    <nav class="container mx-auto p-4 flex justify-between items-center">
+      <h1 class="text-2xl font-bold">Alex Kirimi's Blog</h1>
+      <ul class="flex space-x-6">
+        <li><a href="index.html" class="hover:underline">Home</a></li>
+        <li><a href="about.html" class="hover:underline">About</a></li>
+        <li><a href="contact.html" class="hover:underline">Contact</a></li>
+        <li><a href="privacy.html" class="hover:underline">Privacy Policy</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container mx-auto p-6 prose max-w-4xl bg-white shadow-md rounded-lg mt-6">
+    <h1 class="text-4xl font-bold text-center mb-6">About Alex Kirimi's Blog</h1>
+    <section>
+      <h2>About Me</h2>
+      <p>Welcome to my blog! I'm Alex Kirimi, an economics enthusiast with a passion for demystifying complex financial concepts. With a background in economics and a keen interest in monetary systems, I created this blog to share valuable insights on topics like money, banking, and financial systems.</p>
+      <p>My goal is to provide clear, accurate, and engaging content that helps readers understand the intricacies of economics and its impact on everyday life. Whether you're a student, professional, or simply curious, this blog is designed to offer educational content that is both informative and accessible.</p>
+    </section>
+    <section>
+      <h2>About the Blog</h2>
+      <p>Alex Kirimi's Blog is dedicated to exploring the world of economics, with a focus on money and banking. From the historical evolution of money to modern financial systems, my posts aim to break down complex topics into easy-to-understand explanations. Each article is crafted with thorough research and a commitment to providing value to readers.</p>
+      <p>Expect regular updates with in-depth analyses, practical examples, and thought-provoking discussions. My mission is to empower readers with knowledge to navigate the financial world confidently.</p>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white p-6 mt-6">
+    <div class="container mx-auto text-center">
+      <p>© 2025 Alex Kirimi's Blog. All rights reserved.</p>
+      <p><a href="privacy.html" class="text-blue-300 hover:underline">Privacy Policy</a> | <a href="contact.html" class="text-blue-300 hover:underline">Contact</a></p>
+    </div>
+  </footer>
+
+  <!-- Back to Top Button -->
+  <a href="#top" class="back-to-top">↑</a>
+
+  <script>
+    // Show/hide back-to-top button
+    window.addEventListener('scroll', () => {
+      const backToTop = document.querySelector('.back-to-top');
+      if (window.scrollY > 300) {
+        backToTop.classList.add('show');
+      } else {
+        backToTop.classList.remove('show');
+      }
+    });
+  </script>
+</body>
+</html>
